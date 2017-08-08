@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">Financial Management</string>
+    <string name="button_res">Enter</string>
+    <string name="display0_res">Amount borrowed: RM</string>
+    <string name="display1_res">Amount lent: RM</string>
+    <string name="display2_res">Net amount: RM</string>
+    <string name="description1_res">From: </string>
+    <string name="description2_res">To: </string>
+    <string name="description3_res">Secondary</string>
+    <string name="transButton_res">Transaction History</string>
+    <string name="details0_res">Transaction Details</string>
+    <string name="details1_res">Amount (RM)</string>
+    <string name="displayhist0_res">Date</string>
+    <string name="displayhist1_res">Description</string>
+
+    <string-array name="category_array">
+        <item>Borrow</item>
+        <item>Lend</item>
+        <item>Withdrawal</item>
+        <item>Expenses</item>
+    </string-array>
+
+    <string-array name="secondary_category_array">
+        <item>Return(B)</item>
+        <item>Return(L)</item>
+        <item>Meals</item>
+        <item>Accommodation</item>
+        <item>Transport</item>
+        <item>Stationery</item>
+        <item>Petrol</item>
+        <item>Daily items</item>
+        <item>Communication</item>
+        <item>Entertainment</item>
+        <item>Sports</item>
+        <item>Clothing</item>
+        <item>Projects</item>
+        <item>Medication</item>
+        <item>Savings</item>
+    </string-array>
+</resources>
