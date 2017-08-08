@@ -5,6 +5,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -71,6 +72,7 @@ public class displayTransactionHistory extends AppCompatActivity {
             }
             compiled.add(i, name);
         }
+
         for(int i = 0; i < row; i++){
             if(Integer.valueOf(compiled.get(i).get(0)) == transSpinnerPos){
                 contents.add(i);
@@ -81,16 +83,25 @@ public class displayTransactionHistory extends AppCompatActivity {
 
     @SuppressLint("NewApi")
     protected void displayTransactionDetails(ArrayList<Integer> count){
+        int x;
+        if(transSpinnerPos == 3) x = 1;
+        else x = 0;
+
         for(int i = 0; i < count.size(); i++){
             int position = count.get(i);
-            for(int j = 0; j < compiled.get(count.get(i)).size(); j++){
+            for(int j = x; j < compiled.get(position).size(); j++){
                 displayTextID = new TextView(this);
                 displayTextID.setLayoutParams(new ActionBar.LayoutParams(110, 100));
                 displayTextID.setTextSize(15);
-                displayTextID.setMinWidth(200);
+                if(j == 0){
+                    displayTextID.setMinWidth(150);
+                }
+                else{
+                    displayTextID.setMinWidth(315);
+                }
                 displayTextID.setText(String.valueOf(compiled.get(position).get(j)));
 
-                GridLayout.Spec col = GridLayout.spec(j+1, 1);
+                GridLayout.Spec col = GridLayout.spec(j, 1);
                 GridLayout.Spec row = GridLayout.spec(i, 1);
                 GridLayout.LayoutParams params = new GridLayout.LayoutParams(row, col);
 
