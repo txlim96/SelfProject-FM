@@ -143,6 +143,9 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("NewApi")
     protected void tertiaryInputSetup(){
+        if(gridViewID != null){
+            gridViewID.removeView(inputName);
+        }
         GridLayout.Spec col1 = GridLayout.spec(GridLayout.HORIZONTAL, 1);
         GridLayout.Spec row1 = GridLayout.spec(GridLayout.VERTICAL, 2);
 
@@ -236,6 +239,7 @@ public class MainActivity extends AppCompatActivity {
                                     break;
 
                                 case 2:
+                                    name.add(getResources().getStringArray(R.array.category_array)[spinnerPosition]);
                                     name.add(String.valueOf(Float.valueOf(inputID.getText().toString())));
                                     amount[2] += Float.valueOf(inputID.getText().toString());
                                     break;
@@ -256,6 +260,8 @@ public class MainActivity extends AppCompatActivity {
                                         amount[2] += amount[3];
                                     }
                                     else{
+                                        name.add(getResources().getStringArray(R.array.secondary_category_array)
+                                                [secondarySpinnerPosition]);
                                         amount[2] -= amount[3];
                                     }
                                     name.add(String.valueOf(amount[3]));
