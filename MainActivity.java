@@ -219,8 +219,6 @@ public class MainActivity extends AppCompatActivity {
                         name = new ArrayList<>();
                         spinnerPosition = spinnerID.getSelectedItemPosition();
 
-                        name.add(String.valueOf(spinnerPosition));
-
                         if(inputID.getText().toString().matches("")){
                             amount[spinnerPosition] += (float) 0.00;
                         }
@@ -228,6 +226,10 @@ public class MainActivity extends AppCompatActivity {
                             switch (spinnerPosition){
                                 case 0:
                                 case 1:
+                                    if(inputName.getText().toString().length() == 0 || inputID.getText().toString().length() == 0){
+                                        break;
+                                    }
+                                    name.add(String.valueOf(spinnerPosition));
                                     name.add(inputName.getText().toString());
                                     name.add(String.valueOf(Float.valueOf(inputID.getText().toString())));
 
@@ -239,12 +241,20 @@ public class MainActivity extends AppCompatActivity {
                                     break;
 
                                 case 2:
+                                    if(inputID.getText().toString().length() == 0){
+                                        break;
+                                    }
+                                    name.add(String.valueOf(spinnerPosition));
                                     name.add(getResources().getStringArray(R.array.category_array)[spinnerPosition]);
                                     name.add(String.valueOf(Float.valueOf(inputID.getText().toString())));
                                     amount[2] += Float.valueOf(inputID.getText().toString());
                                     break;
 
                                 case 3:
+                                    if(inputName.getText().toString().length() == 0 || inputID.getText().toString().length() == 0){
+                                        break;
+                                    }
+                                    name.add(String.valueOf(spinnerPosition));
                                     secondarySpinnerPosition = secondarySpinnerID.getSelectedItemPosition();
                                     name.add(String.valueOf(secondarySpinnerPosition));
                                     amount[3] = Float.valueOf(inputID.getText().toString());
@@ -268,8 +278,10 @@ public class MainActivity extends AppCompatActivity {
                                     break;
                             }
                         }
-                        compiled.add(row, name);
-                        row++;
+                        if(inputName.getText().toString().length() > 0 || inputID.getText().toString().length() > 0){
+                            compiled.add(row, name);
+                            row++;
+                        }
 
                         for(int i = 0; i < 3; i++){
                             amountID[i].setText(String.valueOf(amount[i]));

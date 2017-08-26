@@ -1,7 +1,6 @@
 package com.example.nelsonlim.financialmanagement;
 
 import android.annotation.SuppressLint;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +10,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridLayout;
 import android.widget.Spinner;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -21,8 +22,7 @@ public class displayTransactionHistory extends AppCompatActivity {
     private static int row;
     private ArrayList<ArrayList<String>> compiled = new ArrayList<>();
     private Spinner transSpinnerID;
-    private GridLayout displayGridID;
-    private TextView displayTextID;
+    private TableLayout tableLayoutID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +31,11 @@ public class displayTransactionHistory extends AppCompatActivity {
 
         SpinnerSettings();
 
-        displayGridID = (GridLayout) findViewById(R.id.displayGridID);
+        tableLayoutID = (TableLayout) findViewById(R.id.tableLayoutID);
+        if(tableLayoutID != null)
+            tableLayoutID.removeAllViews();
+        screenEvents();
+
         row = getIntent().getIntExtra("size", 0);
         transSpinnerEvent();
     }
@@ -50,8 +54,8 @@ public class displayTransactionHistory extends AppCompatActivity {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         transSpinnerPos = transSpinnerID.getSelectedItemPosition();
-                        if(displayGridID != null){
-                            displayGridID.removeAllViews();
+                        if(tableLayoutID != null){
+                            tableLayoutID.removeAllViews();
                         }
                         getNames();
                     }
@@ -71,6 +75,7 @@ public class displayTransactionHistory extends AppCompatActivity {
                 name.add(getIntent().getStringExtra("compiled" + i + j));
             }
             compiled.add(i, name);
+            Log.i("saved", String.valueOf(compiled.get(i)));
         }
 
         for(int i = 0; i < row; i++){
@@ -89,24 +94,35 @@ public class displayTransactionHistory extends AppCompatActivity {
 
         for(int i = 0; i < count.size(); i++){
             int position = count.get(i);
-            for(int j = x; j < compiled.get(position).size(); j++){
-                displayTextID = new TextView(this);
-                displayTextID.setLayoutParams(new ActionBar.LayoutParams(110, 100));
-                displayTextID.setTextSize(15);
-                if(j == 0){
-                    displayTextID.setMinWidth(150);
-                }
-                else{
-                    displayTextID.setMinWidth(315);
-                }
-                displayTextID.setText(String.valueOf(compiled.get(position).get(j)));
 
-                GridLayout.Spec col = GridLayout.spec(j, 1);
-                GridLayout.Spec row = GridLayout.spec(i, 1);
-                GridLayout.LayoutParams params = new GridLayout.LayoutParams(row, col);
+            TextView description = new TextView(this);
+            TextView amount = new TextView(this);
+            TableRow tableRow = new TableRow(displayTransactionHistory.this);
 
-                displayGridID.addView(displayTextID, params);
-            }
+            description.setText(String.valueOf(compiled.get(position).get(x+1)));
+            amount.setText(String.valueOf(compiled.get(position).get(x+2)));
+
+            description.setPadding(150, 0, 220, 0);
+            description.setTextSize(18);
+            amount.setTextSize(18);
+            amount.setGravity(Gravity.RIGHT);
+
+            tableRow.addView(description);
+            tableRow.addView(amount);
+
+            tableLayoutID.addView(tableRow);
         }
+    }
+
+    protected void screenEvents(){
+        tableLayoutID.setOnLongClickListener(
+                new GridLayout.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        Log.i("savedAmount", "false");
+                        return false;
+                    }
+                }
+        );
     }
 }
