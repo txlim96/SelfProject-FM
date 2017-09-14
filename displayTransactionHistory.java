@@ -75,12 +75,13 @@ public class displayTransactionHistory extends AppCompatActivity {
                 name.add(getIntent().getStringExtra("compiled" + i + j));
             }
             compiled.add(i, name);
-            Log.i("saved", String.valueOf(compiled.get(i)));
         }
+
+        //Log.i("savedAmount", String.valueOf(compiled));
 
         for(int i = 0; i < row; i++){
             if(Integer.valueOf(compiled.get(i).get(0)) == transSpinnerPos){
-                contents.add(i);
+                contents.add(i);    //sequence of selected items in compiled
             }
         }
         displayTransactionDetails(contents);
@@ -88,25 +89,41 @@ public class displayTransactionHistory extends AppCompatActivity {
 
     @SuppressLint("NewApi")
     protected void displayTransactionDetails(ArrayList<Integer> count){
-        int x;
-        if(transSpinnerPos == 3) x = 1;
-        else x = 0;
 
         for(int i = 0; i < count.size(); i++){
-            int position = count.get(i);
+            int position = count.get(i);    //retrieve the sequence to apply in compiled
+            String detailDescription = "";
+            //Log.i("savedAmount", String.valueOf(position));
+            int x = 0;
+            if(transSpinnerPos == 3){
+                x = 1;
+                if(Integer.valueOf(compiled.get(position).get(1)) == 0 || Integer.valueOf(compiled.get(position).get(1)) == 1)
+                    detailDescription = getResources().getStringArray(R.array.secondary_category_array)[Integer.valueOf(compiled.get(position).get(1))]
+                            + " - ";
+            }
 
+            TextView date = new TextView(this);
             TextView description = new TextView(this);
             TextView amount = new TextView(this);
             TableRow tableRow = new TableRow(displayTransactionHistory.this);
 
-            description.setText(String.valueOf(compiled.get(position).get(x+1)));
+            String finalString = detailDescription + String.valueOf(compiled.get(position).get(x+1));
+            date.setText(String.valueOf(compiled.get(position).get(x+3)));
+            description.setText(finalString);
             amount.setText(String.valueOf(compiled.get(position).get(x+2)));
 
-            description.setPadding(150, 0, 220, 0);
-            description.setTextSize(18);
+            date.setTextSize(15);
+            date.setGravity(Gravity.LEFT);
+
+            description.setMinWidth(500);
+            description.setMaxWidth(500);
+            description.setPadding(70, 5, 0, 5);
+            description.setTextSize(15);
+
             amount.setTextSize(18);
             amount.setGravity(Gravity.RIGHT);
 
+            tableRow.addView(date);
             tableRow.addView(description);
             tableRow.addView(amount);
 
@@ -119,7 +136,7 @@ public class displayTransactionHistory extends AppCompatActivity {
                 new GridLayout.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        Log.i("savedAmount", "false");
+                        //Log.i("savedAmount", "false");
                         return false;
                     }
                 }

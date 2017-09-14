@@ -17,7 +17,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.view.View;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView displayID;
     private Spinner spinnerID;
     private Spinner secondarySpinnerID;
+    private Calendar calendar = Calendar.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -251,11 +254,12 @@ public class MainActivity extends AppCompatActivity {
                                     break;
 
                                 case 3:
-                                    if(inputName.getText().toString().length() == 0 || inputID.getText().toString().length() == 0){
+                                    secondarySpinnerPosition = secondarySpinnerID.getSelectedItemPosition();
+                                    if((inputName.getText().toString().length() == 0 || inputID.getText().toString().length() == 0)
+                                            && (secondarySpinnerPosition == 1 || secondarySpinnerPosition == 0)){
                                         break;
                                     }
                                     name.add(String.valueOf(spinnerPosition));
-                                    secondarySpinnerPosition = secondarySpinnerID.getSelectedItemPosition();
                                     name.add(String.valueOf(secondarySpinnerPosition));
                                     amount[3] = Float.valueOf(inputID.getText().toString());
 
@@ -279,6 +283,9 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                         if(inputName.getText().toString().length() > 0 || inputID.getText().toString().length() > 0){
+                            SimpleDateFormat df = new SimpleDateFormat("dd/MM");
+                            String date = df.format(calendar.getTime());
+                            name.add(String.valueOf(date));
                             compiled.add(row, name);
                             row++;
                         }
