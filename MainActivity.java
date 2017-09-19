@@ -3,10 +3,10 @@ package com.example.nelsonlim.financialmanagement;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -49,11 +49,21 @@ public class MainActivity extends AppCompatActivity {
         Settings();
         SpinnerEvent();
         buttonEvents();
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i("act1", "onResume");
+
+        SharedPreferences pref = getSharedPreferences("myPrefs", MODE_PRIVATE);
+
+        compiled.clear();
         row = pref.getInt("size", 0);
 
         for(int i = 0; i < 3; i++) {
-            amount[i] = pref.getFloat(String.valueOf("prefsName" + i), 0.0f);
+            amount[i] = pref.getFloat("prefsName" + i, 0.0f);
+            Log.i("act1", String.valueOf(amount[i]));
         }
 
         for(int i = 0; i < row; i++){
@@ -69,16 +79,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        Log.i("act1", "onPause");
 
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences pref = getSharedPreferences("myPrefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
         editor.putFloat("prefsName", 3);
+        editor.clear().apply();
 
         for(int i = 0; i < 3; i++) {
-            editor.putFloat(String.valueOf("prefsName" + i), amount[i]);
+            editor.putFloat("prefsName" + i, amount[i]);
+            Log.i("act1", String.valueOf(amount[i]));
         }
 
-        editor.clear();
         editor.putInt("size", row);
         for(int i = 0; i < row; i++){
             editor.putInt("col" + i, compiled.get(i).size());
@@ -86,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                 editor.putString("savedCompiled" + i + j, String.valueOf(compiled.get(i).get(j)));
             }
         }
-        editor.commit();
+        editor.apply();
     }
 
     protected void Settings(){
@@ -292,6 +304,7 @@ public class MainActivity extends AppCompatActivity {
 
                         for(int i = 0; i < 3; i++){
                             amountID[i].setText(String.valueOf(amount[i]));
+                            Log.i("act1", String.valueOf(amount[i]));
                         }
                         inputID.setText("");
                         inputName.setText("");
@@ -302,8 +315,12 @@ public class MainActivity extends AppCompatActivity {
         transButtonID.setOnClickListener(
                 new Button.OnClickListener(){
                     public void onClick(View v){
+                        Log.i("act1", "transButton onClick");
+                        for(int i = 0; i < 3; i++) {
+                            intent.putExtra("amount" + i, amount[i]);
+                        }
                         if(compiled.isEmpty()){
-                            compiled = null;
+                            compiled.clear();
                         }
                         else{
                             for(int i = 0; i < row; i++){

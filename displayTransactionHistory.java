@@ -1,6 +1,7 @@
 package com.example.nelsonlim.financialmanagement;
 
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,7 +9,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.GridLayout;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -20,6 +20,7 @@ public class displayTransactionHistory extends AppCompatActivity {
 
     private int transSpinnerPos;
     private static int row;
+    private ArrayList<Float> net = new ArrayList<>();
     private ArrayList<ArrayList<String>> compiled = new ArrayList<>();
     private Spinner transSpinnerID;
     private TableLayout tableLayoutID;
@@ -34,10 +35,37 @@ public class displayTransactionHistory extends AppCompatActivity {
         tableLayoutID = (TableLayout) findViewById(R.id.tableLayoutID);
         if(tableLayoutID != null)
             tableLayoutID.removeAllViews();
-        screenEvents();
 
+        net.clear();
+        for(int i = 0; i < 4; i++)
+            net.add(getIntent().getFloatExtra("amount" + i, 0.0f));
+
+        Log.i("act2", String.valueOf(net));
         row = getIntent().getIntExtra("size", 0);
         transSpinnerEvent();
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        Log.i("act2", "onPause");
+
+        SharedPreferences pref = getSharedPreferences("myPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+
+        editor.clear().apply();
+        editor.putInt("size", compiled.size());
+        for(int i = 0; i < compiled.size(); i++){
+            editor.putInt("col" + i, compiled.get(i).size());
+            for(int j = 0; j < compiled.get(i).size(); j++){
+                editor.putString("savedCompiled" + i + j, String.valueOf(compiled.get(i).get(j)));
+            }
+        }
+
+        for(int i = 0; i < 3; i++)
+            editor.putFloat("prefsName" + i, net.get(i));
+        Log.i("act2", String.valueOf(net));
+        editor.apply();
     }
 
     protected void SpinnerSettings(){
@@ -54,6 +82,7 @@ public class displayTransactionHistory extends AppCompatActivity {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         transSpinnerPos = transSpinnerID.getSelectedItemPosition();
+                        onPause();
                         if(tableLayoutID != null){
                             tableLayoutID.removeAllViews();
                         }
@@ -68,6 +97,7 @@ public class displayTransactionHistory extends AppCompatActivity {
 
     protected void getNames(){
         ArrayList<Integer> contents = new ArrayList<>();
+        compiled.clear();
         for(int i = 0; i < row; i++){
             ArrayList<String> name = new ArrayList<>();
             int column = getIntent().getIntExtra("col" + i, 0);
@@ -77,24 +107,22 @@ public class displayTransactionHistory extends AppCompatActivity {
             compiled.add(i, name);
         }
 
-        //Log.i("savedAmount", String.valueOf(compiled));
-
         for(int i = 0; i < row; i++){
             if(Integer.valueOf(compiled.get(i).get(0)) == transSpinnerPos){
                 contents.add(i);    //sequence of selected items in compiled
             }
         }
+
         displayTransactionDetails(contents);
     }
 
     @SuppressLint("NewApi")
     protected void displayTransactionDetails(ArrayList<Integer> count){
-
         for(int i = 0; i < count.size(); i++){
+            int x = 0;
             int position = count.get(i);    //retrieve the sequence to apply in compiled
             String detailDescription = "";
-            //Log.i("savedAmount", String.valueOf(position));
-            int x = 0;
+
             if(transSpinnerPos == 3){
                 x = 1;
                 if(Integer.valueOf(compiled.get(position).get(1)) == 0 || Integer.valueOf(compiled.get(position).get(1)) == 1)
@@ -105,7 +133,7 @@ public class displayTransactionHistory extends AppCompatActivity {
             TextView date = new TextView(this);
             TextView description = new TextView(this);
             TextView amount = new TextView(this);
-            TableRow tableRow = new TableRow(displayTransactionHistory.this);
+            final TableRow tableRow = new TableRow(displayTransactionHistory.this);
 
             String finalString = detailDescription + String.valueOf(compiled.get(position).get(x+1));
             date.setText(String.valueOf(compiled.get(position).get(x+3)));
@@ -126,20 +154,38 @@ public class displayTransactionHistory extends AppCompatActivity {
             tableRow.addView(date);
             tableRow.addView(description);
             tableRow.addView(amount);
+            tableRow.setId(position);
 
             tableLayoutID.addView(tableRow);
-        }
-    }
 
-    protected void screenEvents(){
-        tableLayoutID.setOnLongClickListener(
-                new GridLayout.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        //Log.i("savedAmount", "false");
-                        return false;
+            tableRow.setOnLongClickListener(
+                    new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            //tableRow.removeView(tableRow.findViewById(tableRow.getId()));
+                            compiled.remove(tableRow.getId());
+                            float[] temp = new float[4];
+                            for(int i = 0; i < 4; i++)
+                                temp[i] = 0;
+                            if(compiled.size() > 0){
+                                for(int i = 0; i < compiled.size(); i++){
+                                    int sign = 1;
+                                    String loc = compiled.get(i).get(0);
+                                    if(Integer.valueOf(loc) == 3){
+                                        loc = compiled.get(i).get(1);
+                                        sign = -1;
+                                    }
+                                    temp[Integer.valueOf(loc)] += Float.valueOf(compiled.get(i).get(compiled.get(i).size()-2)) * sign;
+                                }
+                            }
+                            net.clear();
+                            for(int i = 0; i < 2; i++)
+                                net.add(temp[i]);
+                            net.add(temp[0] - temp[1] + temp[2] - temp[3]);
+                            return false;
+                        }
                     }
-                }
-        );
+            );
+        }
     }
 }
