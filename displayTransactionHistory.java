@@ -1,7 +1,9 @@
 package com.example.nelsonlim.financialmanagement;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +15,7 @@ import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -72,13 +75,9 @@ public class displayTransactionHistory extends AppCompatActivity {
                 editor.putString("savedCompiled" + i + j, String.valueOf(compiled.get(i).get(j)));
             }
         }
-        Log.i("act2", "savedTransaction");
-        Log.i("act2", String.valueOf(compiled));
 
         for(int i = 0; i < 3; i++)
             editor.putFloat("prefsName" + i, net.get(i));
-        Log.i("act2", "saved");
-        Log.i("act2", String.valueOf(net));
         editor.apply();
     }
 
@@ -110,9 +109,6 @@ public class displayTransactionHistory extends AppCompatActivity {
 
     protected void getNames(){
         ArrayList<Integer> contents = new ArrayList<>();
-
-        Log.i("act2", "getNames");
-        Log.i("act2", String.valueOf(compiled));
 
         for(int i = 0; i < compiled.size(); i++){
             if(Integer.valueOf(compiled.get(i).get(0)) == transSpinnerPos){
@@ -169,31 +165,60 @@ public class displayTransactionHistory extends AppCompatActivity {
                     new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View v) {
-                            tableRow.removeAllViews();
-                            compiled.remove(tableRow.getId());
-                            float[] temp = new float[4];
-                            for(int i = 0; i < 4; i++)
-                                temp[i] = 0;
-                            if(compiled.size() > 0){
-                                for(int i = 0; i < compiled.size(); i++){
-                                    int sign = 1;
-                                    String loc = compiled.get(i).get(0);
-                                    if(Integer.valueOf(loc) == 3){
-                                        loc = compiled.get(i).get(1);
-                                        sign = -1;
-                                    }
-                                    temp[Integer.valueOf(loc)] += Float.valueOf(compiled.get(i).get(compiled.get(i).size()-2)) * sign;
-                                }
-                            }
-                            net.clear();
-                            for(int i = 0; i < 2; i++)
-                                net.add(temp[i]);
-                            net.add(temp[0] - temp[1] + temp[2] - temp[3]);
-                            saveTransactions();
+                            deleteDialogFragment(tableRow);
                             return false;
                         }
                     }
             );
         }
+    }
+
+    protected void deleteDialogFragment(final TableRow tableRow){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder
+                .setMessage("Are you sure you want to delete this transaction?")
+                .setPositiveButton("Yes",
+                        new DialogInterface.OnClickListener(){
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                removeTransaction(tableRow);
+                                Toast.makeText(displayTransactionHistory.this,
+                                        "Transaction deleted successfully", Toast.LENGTH_LONG).show();
+                            }
+                        })
+
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener(){
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
+    protected void removeTransaction(TableRow tableRow){
+        tableRow.removeAllViews();
+        compiled.remove(tableRow.getId());
+        float[] temp = new float[4];
+        for(int i = 0; i < 4; i++)
+            temp[i] = 0;
+        if(compiled.size() > 0){
+            for(int i = 0; i < compiled.size(); i++){
+                int sign = 1;
+                String loc = compiled.get(i).get(0);
+                if(Integer.valueOf(loc) == 3){
+                    loc = compiled.get(i).get(1);
+                    sign = -1;
+                }
+                temp[Integer.valueOf(loc)] += Float.valueOf(compiled.get(i).get(compiled.get(i).size()-2)) * sign;
+            }
+        }
+        net.clear();
+        for(int i = 0; i < 2; i++)
+            net.add(temp[i]);
+        net.add(temp[0] - temp[1] + temp[2] - temp[3]);
+        saveTransactions();
     }
 }
