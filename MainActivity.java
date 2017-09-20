@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i("act1", "onResume");
+        //Log.i("act1", "onResume");
 
         SharedPreferences pref = getSharedPreferences("myPrefs", MODE_PRIVATE);
 
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
         for(int i = 0; i < 3; i++) {
             amount[i] = pref.getFloat("prefsName" + i, 0.0f);
-            Log.i("act1", String.valueOf(amount[i]));
+            //Log.i("act1", String.valueOf(amount[i]));
         }
 
         for(int i = 0; i < row; i++){
@@ -74,12 +74,17 @@ public class MainActivity extends AppCompatActivity {
             }
             compiled.add(i, name);
         }
+
+        for(int i = 0; i < 3; i++){
+            amountID[i].setText(String.valueOf(amount[i]));
+            //Log.i("act1", String.valueOf(amount[i]));
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.i("act1", "onPause");
+        //Log.i("act1", "onPause");
 
         SharedPreferences pref = getSharedPreferences("myPrefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
@@ -88,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
         for(int i = 0; i < 3; i++) {
             editor.putFloat("prefsName" + i, amount[i]);
-            Log.i("act1", String.valueOf(amount[i]));
+            //Log.i("act1", String.valueOf(amount[i]));
         }
 
         editor.putInt("size", row);
@@ -304,7 +309,7 @@ public class MainActivity extends AppCompatActivity {
 
                         for(int i = 0; i < 3; i++){
                             amountID[i].setText(String.valueOf(amount[i]));
-                            Log.i("act1", String.valueOf(amount[i]));
+                            //Log.i("act1", String.valueOf(amount[i]));
                         }
                         inputID.setText("");
                         inputName.setText("");
@@ -315,7 +320,7 @@ public class MainActivity extends AppCompatActivity {
         transButtonID.setOnClickListener(
                 new Button.OnClickListener(){
                     public void onClick(View v){
-                        Log.i("act1", "transButton onClick");
+                        //Log.i("act1", "transButton onClick");
                         for(int i = 0; i < 3; i++) {
                             intent.putExtra("amount" + i, amount[i]);
                         }

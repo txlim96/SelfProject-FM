@@ -19,7 +19,6 @@ import java.util.ArrayList;
 public class displayTransactionHistory extends AppCompatActivity {
 
     private int transSpinnerPos;
-    private static int row;
     private ArrayList<Float> net = new ArrayList<>();
     private ArrayList<ArrayList<String>> compiled = new ArrayList<>();
     private Spinner transSpinnerID;
@@ -40,16 +39,28 @@ public class displayTransactionHistory extends AppCompatActivity {
         for(int i = 0; i < 4; i++)
             net.add(getIntent().getFloatExtra("amount" + i, 0.0f));
 
-        Log.i("act2", String.valueOf(net));
+        int row;
         row = getIntent().getIntExtra("size", 0);
+
+        for(int i = 0; i < row; i++){
+            ArrayList<String> name = new ArrayList<>();
+            int column = getIntent().getIntExtra("col" + i, 0);
+            for(int j = 0; j < column; j++){
+                name.add(getIntent().getStringExtra("compiled" + i + j));
+            }
+            compiled.add(i, name);
+        }
         transSpinnerEvent();
     }
 
     @Override
     protected void onPause(){
         super.onPause();
-        Log.i("act2", "onPause");
 
+        saveTransactions();
+    }
+
+    protected void saveTransactions(){
         SharedPreferences pref = getSharedPreferences("myPrefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
 
@@ -61,9 +72,12 @@ public class displayTransactionHistory extends AppCompatActivity {
                 editor.putString("savedCompiled" + i + j, String.valueOf(compiled.get(i).get(j)));
             }
         }
+        Log.i("act2", "savedTransaction");
+        Log.i("act2", String.valueOf(compiled));
 
         for(int i = 0; i < 3; i++)
             editor.putFloat("prefsName" + i, net.get(i));
+        Log.i("act2", "saved");
         Log.i("act2", String.valueOf(net));
         editor.apply();
     }
@@ -82,7 +96,6 @@ public class displayTransactionHistory extends AppCompatActivity {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         transSpinnerPos = transSpinnerID.getSelectedItemPosition();
-                        onPause();
                         if(tableLayoutID != null){
                             tableLayoutID.removeAllViews();
                         }
@@ -97,17 +110,11 @@ public class displayTransactionHistory extends AppCompatActivity {
 
     protected void getNames(){
         ArrayList<Integer> contents = new ArrayList<>();
-        compiled.clear();
-        for(int i = 0; i < row; i++){
-            ArrayList<String> name = new ArrayList<>();
-            int column = getIntent().getIntExtra("col" + i, 0);
-            for(int j = 0; j < column; j++){
-                name.add(getIntent().getStringExtra("compiled" + i + j));
-            }
-            compiled.add(i, name);
-        }
 
-        for(int i = 0; i < row; i++){
+        Log.i("act2", "getNames");
+        Log.i("act2", String.valueOf(compiled));
+
+        for(int i = 0; i < compiled.size(); i++){
             if(Integer.valueOf(compiled.get(i).get(0)) == transSpinnerPos){
                 contents.add(i);    //sequence of selected items in compiled
             }
@@ -162,7 +169,7 @@ public class displayTransactionHistory extends AppCompatActivity {
                     new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View v) {
-                            //tableRow.removeView(tableRow.findViewById(tableRow.getId()));
+                            tableRow.removeAllViews();
                             compiled.remove(tableRow.getId());
                             float[] temp = new float[4];
                             for(int i = 0; i < 4; i++)
@@ -182,6 +189,7 @@ public class displayTransactionHistory extends AppCompatActivity {
                             for(int i = 0; i < 2; i++)
                                 net.add(temp[i]);
                             net.add(temp[0] - temp[1] + temp[2] - temp[3]);
+                            saveTransactions();
                             return false;
                         }
                     }
