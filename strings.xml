@@ -12,6 +12,12 @@
     <string name="details1_res">Amount (RM)</string>
     <string name="displayhist0_res">Date</string>
     <string name="displayhist1_res">Description</string>
+    <string name="yes">Yes</string>
+    <string name="cancel">Cancel</string>
+    <string name="question">Are you sure you want to delete this transaction?</string>
+    <string name="confirmed">Transaction deleted successfully!</string>
+    <string name="input_text">Please enter amount/name into the required fields!</string>
+    <string name="insufficient_credit">You have insufficient cash!</string>
 
     <string-array name="category_array">
         <item>Borrow</item>

@@ -121,6 +121,7 @@ public class displayTransactionHistory extends AppCompatActivity {
 
     @SuppressLint("NewApi")
     protected void displayTransactionDetails(ArrayList<Integer> count){
+        tableLayoutID.removeAllViews();
         for(int i = 0; i < count.size(); i++){
             int x = 0;
             int position = count.get(i);    //retrieve the sequence to apply in compiled
@@ -146,8 +147,8 @@ public class displayTransactionHistory extends AppCompatActivity {
             date.setTextSize(15);
             date.setGravity(Gravity.LEFT);
 
-            description.setMinWidth(500);
-            description.setMaxWidth(500);
+            description.setMinWidth(480);
+            description.setMaxWidth(480);
             description.setPadding(70, 5, 0, 5);
             description.setTextSize(15);
 
@@ -176,18 +177,18 @@ public class displayTransactionHistory extends AppCompatActivity {
     protected void deleteDialogFragment(final TableRow tableRow){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder
-                .setMessage("Are you sure you want to delete this transaction?")
-                .setPositiveButton("Yes",
+                .setMessage(R.string.question)
+                .setPositiveButton(R.string.yes,
                         new DialogInterface.OnClickListener(){
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 removeTransaction(tableRow);
                                 Toast.makeText(displayTransactionHistory.this,
-                                        "Transaction deleted successfully", Toast.LENGTH_LONG).show();
+                                        R.string.confirmed, Toast.LENGTH_LONG).show();
                             }
                         })
 
-                .setNegativeButton("Cancel",
+                .setNegativeButton(R.string.cancel,
                         new DialogInterface.OnClickListener(){
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -219,6 +220,8 @@ public class displayTransactionHistory extends AppCompatActivity {
         for(int i = 0; i < 2; i++)
             net.add(temp[i]);
         net.add(temp[0] - temp[1] + temp[2] - temp[3]);
+
+        getNames();
         saveTransactions();
     }
 }
