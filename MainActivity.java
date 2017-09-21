@@ -16,6 +16,7 @@ import android.widget.GridLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.view.View;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -54,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //Log.i("act1", "onResume");
 
         SharedPreferences pref = getSharedPreferences("myPrefs", MODE_PRIVATE);
 
@@ -63,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
 
         for(int i = 0; i < 3; i++) {
             amount[i] = pref.getFloat("prefsName" + i, 0.0f);
-            //Log.i("act1", String.valueOf(amount[i]));
         }
 
         for(int i = 0; i < row; i++){
@@ -77,14 +76,12 @@ public class MainActivity extends AppCompatActivity {
 
         for(int i = 0; i < 3; i++){
             amountID[i].setText(String.valueOf(amount[i]));
-            //Log.i("act1", String.valueOf(amount[i]));
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        //Log.i("act1", "onPause");
 
         SharedPreferences pref = getSharedPreferences("myPrefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
@@ -93,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
 
         for(int i = 0; i < 3; i++) {
             editor.putFloat("prefsName" + i, amount[i]);
-            //Log.i("act1", String.valueOf(amount[i]));
         }
 
         editor.putInt("size", row);
@@ -162,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @SuppressLint("NewApi")
-    protected void tertiaryInputSetup(){
+    protected void returnNameInputSetup(){
         if(gridViewID != null){
             gridViewID.removeView(inputName);
         }
@@ -171,6 +167,8 @@ public class MainActivity extends AppCompatActivity {
 
         GridLayout.LayoutParams params2 = new GridLayout.LayoutParams(row1, col1);
         inputName.setLayoutParams(new ActionBar.LayoutParams(100, 20));
+        inputName.setMinWidth(300);
+        inputName.setMaxWidth(300);
         gridViewID.addView(inputName, params2);
     }
 
@@ -217,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
                         switch(secondarySpinnerPosition){
                             case 0:
                             case 1:
-                                tertiaryInputSetup();
+                                returnNameInputSetup();
                                 break;
                             default:
                                 ((ViewGroup) inputName.getParent()).removeView(inputName);
@@ -228,6 +226,16 @@ public class MainActivity extends AppCompatActivity {
                     public void onNothingSelected(AdapterView<?> parent) {}
                 }
         );
+    }
+
+    protected void addDate(){
+        if(inputName.getText().toString().length() > 0 || inputID.getText().toString().length() > 0){
+            SimpleDateFormat df = new SimpleDateFormat("dd/MM");
+            String date = df.format(calendar.getTime());
+            name.add(String.valueOf(date));
+            compiled.add(row, name);
+            row++;
+        }
     }
 
     protected void buttonEvents(){
@@ -247,6 +255,11 @@ public class MainActivity extends AppCompatActivity {
                                 case 0:
                                 case 1:
                                     if(inputName.getText().toString().length() == 0 || inputID.getText().toString().length() == 0){
+                                        Toast.makeText(MainActivity.this, R.string.input_text, Toast.LENGTH_LONG).show();
+                                        break;
+                                    }
+                                    if(spinnerPosition == 1 && amount[2] < Float.valueOf(inputID.getText().toString())){
+                                        Toast.makeText(MainActivity.this, R.string.insufficient_credit, Toast.LENGTH_LONG).show();
                                         break;
                                     }
                                     name.add(String.valueOf(spinnerPosition));
@@ -258,22 +271,30 @@ public class MainActivity extends AppCompatActivity {
                                         amount[2] += Float.valueOf(inputID.getText().toString());
                                     else if(spinnerPosition == 1)
                                         amount[2] -= Float.valueOf(inputID.getText().toString());
+                                    addDate();
                                     break;
 
                                 case 2:
                                     if(inputID.getText().toString().length() == 0){
+                                        Toast.makeText(MainActivity.this, R.string.input_text, Toast.LENGTH_LONG).show();
                                         break;
                                     }
                                     name.add(String.valueOf(spinnerPosition));
                                     name.add(getResources().getStringArray(R.array.category_array)[spinnerPosition]);
                                     name.add(String.valueOf(Float.valueOf(inputID.getText().toString())));
                                     amount[2] += Float.valueOf(inputID.getText().toString());
+                                    addDate();
                                     break;
 
                                 case 3:
                                     secondarySpinnerPosition = secondarySpinnerID.getSelectedItemPosition();
                                     if((inputName.getText().toString().length() == 0 || inputID.getText().toString().length() == 0)
                                             && (secondarySpinnerPosition == 1 || secondarySpinnerPosition == 0)){
+                                        Toast.makeText(MainActivity.this, R.string.input_text, Toast.LENGTH_LONG).show();
+                                        break;
+                                    }
+                                    if(amount[2] < Float.valueOf(inputID.getText().toString())){
+                                        Toast.makeText(MainActivity.this, R.string.insufficient_credit, Toast.LENGTH_LONG).show();
                                         break;
                                     }
                                     name.add(String.valueOf(spinnerPosition));
@@ -296,20 +317,13 @@ public class MainActivity extends AppCompatActivity {
                                         amount[2] -= amount[3];
                                     }
                                     name.add(String.valueOf(amount[3]));
+                                    addDate();
                                     break;
                             }
-                        }
-                        if(inputName.getText().toString().length() > 0 || inputID.getText().toString().length() > 0){
-                            SimpleDateFormat df = new SimpleDateFormat("dd/MM");
-                            String date = df.format(calendar.getTime());
-                            name.add(String.valueOf(date));
-                            compiled.add(row, name);
-                            row++;
                         }
 
                         for(int i = 0; i < 3; i++){
                             amountID[i].setText(String.valueOf(amount[i]));
-                            //Log.i("act1", String.valueOf(amount[i]));
                         }
                         inputID.setText("");
                         inputName.setText("");
@@ -320,7 +334,6 @@ public class MainActivity extends AppCompatActivity {
         transButtonID.setOnClickListener(
                 new Button.OnClickListener(){
                     public void onClick(View v){
-                        //Log.i("act1", "transButton onClick");
                         for(int i = 0; i < 3; i++) {
                             intent.putExtra("amount" + i, amount[i]);
                         }
