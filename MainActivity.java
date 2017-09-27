@@ -3,6 +3,7 @@ package com.example.nelsonlim.financialmanagement;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -106,10 +107,14 @@ public class MainActivity extends AppCompatActivity {
 
         inputName = new EditText(this);
         inputName.setSingleLine();
+        inputName.setTextColor(Color.WHITE);
         secondarySpinnerID = new Spinner(this);
+        secondarySpinnerID.getContext().setTheme(R.style.SpinnerTheme);
+        secondarySpinnerID.setPadding(15, 20, 0, 0);
         buttonID = (Button) findViewById(R.id.buttonID);
         transButtonID = (Button) findViewById(R.id.transButtonID);
         inputID = (EditText) findViewById(R.id.inputID);
+        inputID.setTextColor(Color.WHITE);
         spinnerID = (Spinner) findViewById(R.id.spinnerID);
         intent = new Intent(MainActivity.this, displayTransactionHistory.class);
 
@@ -128,48 +133,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @SuppressLint("NewApi")
-    protected void secondaryInputSetup(int spinnerPosition){
-        displayID = new TextView(this);
+    protected void secondaryInputSetup(){
         gridViewID = (GridLayout) findViewById(R.id.gridViewID);
         if (gridViewID != null) {
             gridViewID.removeAllViews();
         }
-        displayID.setLayoutParams(new ActionBar.LayoutParams(110, 110));
-        displayID.setTextSize(18);
 
-        GridLayout.Spec col = GridLayout.spec(GridLayout.UNDEFINED, 1);
-        GridLayout.Spec row = GridLayout.spec(GridLayout.UNDEFINED, 1);
+        displayID = new TextView(this);
+
+        displayID.setTextSize(18);
+        displayID.setPadding(33, 20, 0, 0);
+
+        if(spinnerPosition == 3){
+            GridLayout.Spec col2 = GridLayout.spec(0, 1);
+            GridLayout.Spec row2 = GridLayout.spec(0, 1);
+            GridLayout.LayoutParams params2 = new GridLayout.LayoutParams(row2, col2);
+            gridViewID.addView(secondarySpinnerID, params2);
+        }
+
+        GridLayout.Spec col = GridLayout.spec(0, 1);
+        GridLayout.Spec row = GridLayout.spec(1, 1);
+        GridLayout.Spec col1 = GridLayout.spec(1, 1);
 
         GridLayout.LayoutParams params = new GridLayout.LayoutParams(row, col);
-        GridLayout.LayoutParams params1 = new GridLayout.LayoutParams(row, col);
         gridViewID.addView(displayID, params);
 
-        if(spinnerPosition == 0 || spinnerPosition == 1){
-            inputName.setLayoutParams(new ActionBar.LayoutParams(100, 20));
-            gridViewID.addView(inputName, params1);
-        }
-        else if(spinnerPosition >= 3 && spinnerPosition <= 5){
-            ArrayAdapter<CharSequence> secondaryAdapter = ArrayAdapter.createFromResource(this, R.array.secondary_category_array,
-                    android.R.layout.simple_spinner_item);
-            secondaryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            secondarySpinnerID.setAdapter(secondaryAdapter);
-            gridViewID.addView(secondarySpinnerID, params1);
-        }
-    }
+        inputName.setLayoutParams(new ActionBar.LayoutParams(110, 20));
+        inputName.setMinWidth(200);
 
-    @SuppressLint("NewApi")
-    protected void returnNameInputSetup(){
-        if(gridViewID != null){
-            gridViewID.removeView(inputName);
-        }
-        GridLayout.Spec col1 = GridLayout.spec(GridLayout.HORIZONTAL, 1);
-        GridLayout.Spec row1 = GridLayout.spec(GridLayout.VERTICAL, 2);
+        GridLayout.LayoutParams params1 = new GridLayout.LayoutParams(row, col1);
+        gridViewID.addView(inputName, params1);
 
-        GridLayout.LayoutParams params2 = new GridLayout.LayoutParams(row1, col1);
-        inputName.setLayoutParams(new ActionBar.LayoutParams(100, 20));
-        inputName.setMinWidth(300);
-        inputName.setMaxWidth(300);
-        gridViewID.addView(inputName, params2);
     }
 
     protected void SpinnerEvent(){
@@ -180,12 +174,12 @@ public class MainActivity extends AppCompatActivity {
                         spinnerPosition = spinnerID.getSelectedItemPosition();
                         switch(spinnerPosition){
                             case 0:
-                                secondaryInputSetup(spinnerPosition);
+                                secondaryInputSetup();
                                 displayID.setText(getString(R.string.description1_res));
                                 break;
 
                             case 1:
-                                secondaryInputSetup(spinnerPosition);
+                                secondaryInputSetup();
                                 displayID.setText(getString(R.string.description2_res));
                                 break;
 
@@ -194,12 +188,17 @@ public class MainActivity extends AppCompatActivity {
                                 break;
 
                             case 3:
-                                secondaryInputSetup(spinnerPosition);
-                                displayID.setText(getString(R.string.description3_res));
+                                ArrayAdapter<CharSequence> secondaryAdapter = ArrayAdapter.createFromResource(MainActivity.this,
+                                        R.array.secondary_category_array, android.R.layout.simple_spinner_item);
+                                secondaryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                secondarySpinnerID.setAdapter(secondaryAdapter);
+                                secondaryInputSetup();
                                 break;
 
                             default:
                         }
+                        ((TextView) parent.getChildAt(0)).setTextColor(Color.WHITE);
+                        displayID.setTextColor(Color.WHITE);
                     }
 
                     @Override
@@ -214,11 +213,18 @@ public class MainActivity extends AppCompatActivity {
                         secondarySpinnerPosition = secondarySpinnerID.getSelectedItemPosition();
                         switch(secondarySpinnerPosition){
                             case 0:
+                                secondaryInputSetup();
+                                displayID.setText(R.string.description2_res);
+                                break;
                             case 1:
-                                returnNameInputSetup();
+                                secondaryInputSetup();
+                                displayID.setText(R.string.description1_res);
                                 break;
                             default:
-                                ((ViewGroup) inputName.getParent()).removeView(inputName);
+                                if(inputName.getParent() != null) {
+                                    ((ViewGroup) inputName.getParent()).removeView(inputName);
+                                    ((ViewGroup) displayID.getParent()).removeView(displayID);
+                                }
                         }
                     }
 

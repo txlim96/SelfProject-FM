@@ -3,6 +3,7 @@ package com.example.nelsonlim.financialmanagement;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -98,6 +99,7 @@ public class displayTransactionHistory extends AppCompatActivity {
                         if(tableLayoutID != null){
                             tableLayoutID.removeAllViews();
                         }
+                        ((TextView) parent.getChildAt(0)).setTextColor(Color.WHITE);
                         getNames();
                     }
 
@@ -146,14 +148,17 @@ public class displayTransactionHistory extends AppCompatActivity {
 
             date.setTextSize(15);
             date.setGravity(Gravity.LEFT);
+            date.setTextColor(Color.WHITE);
 
             description.setMinWidth(480);
             description.setMaxWidth(480);
-            description.setPadding(70, 5, 0, 5);
+            description.setPadding(0, 5, 0, 5);
             description.setTextSize(15);
+            description.setTextColor(Color.WHITE);
 
             amount.setTextSize(18);
             amount.setGravity(Gravity.RIGHT);
+            amount.setTextColor(Color.WHITE);
 
             tableRow.addView(date);
             tableRow.addView(description);

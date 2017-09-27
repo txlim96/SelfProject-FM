@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Financial Management</string>
+    <string name="app_name">Financial Organiser</string>
     <string name="button_res">Enter</string>
     <string name="display0_res">Amount borrowed: RM</string>
     <string name="display1_res">Amount lent: RM</string>
