@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
 
                             default:
                         }
-                        ((TextView) parent.getChildAt(0)).setTextColor(Color.WHITE);
+                        //((TextView) parent.getChildAt(0)).setTextColor(Color.WHITE);
                         displayID.setTextColor(Color.WHITE);
                     }
 
@@ -252,6 +252,7 @@ public class MainActivity extends AppCompatActivity {
         buttonID.setOnClickListener(
                 new Button.OnClickListener(){
                     public void onClick(View v){
+                        int sign = 1;
                         name = new ArrayList<>();
                         spinnerPosition = spinnerID.getSelectedItemPosition();
 
@@ -272,13 +273,12 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                     name.add(String.valueOf(spinnerPosition));
                                     name.add(inputName.getText().toString());
-                                    name.add(String.valueOf(Float.valueOf(inputID.getText().toString())));
 
-                                    amount[spinnerPosition] += Float.valueOf(inputID.getText().toString());
-                                    if (spinnerPosition == 0)
-                                        amount[2] += Float.valueOf(inputID.getText().toString());
-                                    else if(spinnerPosition == 1)
-                                        amount[2] -= Float.valueOf(inputID.getText().toString());
+                                    if(spinnerPosition == 1)
+                                        sign = -1;
+                                    amount[spinnerPosition] += sign * Float.valueOf(inputID.getText().toString());
+                                    name.add(String.valueOf(sign * Float.valueOf(inputID.getText().toString())));
+                                    amount[2] += sign * Float.valueOf(inputID.getText().toString());
                                     addDate();
                                     break;
 
@@ -307,23 +307,25 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                     name.add(String.valueOf(spinnerPosition));
                                     name.add(String.valueOf(secondarySpinnerPosition));
-                                    amount[3] = Float.valueOf(inputID.getText().toString());
 
                                     if(secondarySpinnerPosition == 0){
                                         name.add(inputName.getText().toString());
-                                        amount[secondarySpinnerPosition] -= amount[3];
-                                        amount[2] -= amount[3];
+                                        sign = -1;
+                                        amount[3] = sign * Float.valueOf(inputID.getText().toString());
+                                        amount[secondarySpinnerPosition] += amount[3];
                                     }
                                     else if(secondarySpinnerPosition == 1){
                                         name.add(inputName.getText().toString());
-                                        amount[secondarySpinnerPosition] -= amount[3];
-                                        amount[2] += amount[3];
+                                        amount[3] = sign * Float.valueOf(inputID.getText().toString());
+                                        amount[secondarySpinnerPosition] += amount[3];
                                     }
                                     else{
                                         name.add(getResources().getStringArray(R.array.secondary_category_array)
                                                 [secondarySpinnerPosition]);
-                                        amount[2] -= amount[3];
+                                        sign = -1;
+                                        amount[3] = sign * Float.valueOf(inputID.getText().toString());
                                     }
+                                    amount[2] += amount[3];
                                     name.add(String.valueOf(amount[3]));
                                     addDate();
                                     break;
