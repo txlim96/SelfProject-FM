@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(R.layout.action_bar);
         setContentView(R.layout.activity_main);
 
         Settings();
@@ -197,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
 
                             default:
                         }
-                        ((TextView) parent.getChildAt(0)).setTextColor(Color.WHITE);
+                        //((TextView) parent.getChildAt(0)).setTextColor(Color.WHITE);
                         displayID.setTextColor(Color.WHITE);
                     }
 

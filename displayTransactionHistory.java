@@ -18,7 +18,9 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class displayTransactionHistory extends AppCompatActivity {
 
@@ -27,6 +29,7 @@ public class displayTransactionHistory extends AppCompatActivity {
     private ArrayList<ArrayList<String>> compiled = new ArrayList<>();
     private Spinner transSpinnerID;
     private TableLayout tableLayoutID;
+    private Calendar calendar = Calendar.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,12 +38,20 @@ public class displayTransactionHistory extends AppCompatActivity {
 
         SpinnerSettings();
 
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM");
+        String date = df.format(calendar.getTime());
+        Log.i("act2", date);
+
+        /*String[] separated = date.split("/");
+        Log.i("act2", separated[0]);
+        Log.i("act2", separated[1]);*/
+
         tableLayoutID = (TableLayout) findViewById(R.id.tableLayoutID);
         if(tableLayoutID != null)
             tableLayoutID.removeAllViews();
 
         net.clear();
-        for(int i = 0; i < 4; i++)
+        for(int i = 0; i < 3; i++)
             net.add(getIntent().getFloatExtra("amount" + i, 0.0f));
 
         int row;
@@ -206,11 +217,35 @@ public class displayTransactionHistory extends AppCompatActivity {
 
     protected void removeTransaction(TableRow tableRow){
         tableRow.removeAllViews();
-        compiled.remove(tableRow.getId());
-        float[] temp = new float[4];
-        for(int i = 0; i < 4; i++)
+
+        int sign = 1, amountLocation = 2, tempLocation = 1;
+        float[] temp = new float[3];
+        for(int i = 0; i < 3; i++)
             temp[i] = 0;
-        if(compiled.size() > 0){
+
+        ArrayList<String> toBeRemoved = compiled.get(tableRow.getId());
+        if(Integer.valueOf(toBeRemoved.get(0)) != 1){
+            tempLocation = Integer.valueOf(toBeRemoved.get(0));
+            sign = -1;
+            if(Integer.valueOf(toBeRemoved.get(0)) == 3){
+                tempLocation = Integer.valueOf(toBeRemoved.get(1));
+                amountLocation += 1;
+                if(Integer.valueOf(toBeRemoved.get(1)) != 1)
+                    sign = 1;
+            }
+        }
+        temp[2] = sign * Float.valueOf(toBeRemoved.get(amountLocation));
+        temp[tempLocation] = temp[2];
+        for(int i = 0; i < 3; i++){
+            temp[i] = temp[i] + net.get(i);
+            Log.i("act2", String.valueOf(temp[i]));
+        }
+        net.clear();
+        for(int i = 0; i < 3; i++)
+            net.add(temp[i]);
+        compiled.remove(tableRow.getId());
+
+        /*if(compiled.size() > 0){
             for(int i = 0; i < compiled.size(); i++){
                 int sign = 1;
                 String loc = compiled.get(i).get(0);
@@ -225,7 +260,7 @@ public class displayTransactionHistory extends AppCompatActivity {
         for(int i = 0; i < 2; i++)
             net.add(temp[i]);
         net.add(temp[0] - temp[1] + temp[2] - temp[3]);
-
+*/
         getNames();
         saveTransactions();
     }
