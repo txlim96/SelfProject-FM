@@ -38,10 +38,10 @@ public class displayTransactionHistory extends AppCompatActivity {
 
         SpinnerSettings();
 
-        SimpleDateFormat df = new SimpleDateFormat("dd/MM");
-        String date = df.format(calendar.getTime());
-
-        String[] currentsplit = date.split("/");
+        ///////change "dd" to "MM"/////////////
+        SimpleDateFormat df = new SimpleDateFormat("dd");
+        ///////////////////////////////////////
+        String currentMonth = df.format(calendar.getTime());
 
         tableLayoutID = (TableLayout) findViewById(R.id.tableLayoutID);
         if(tableLayoutID != null)
@@ -51,7 +51,7 @@ public class displayTransactionHistory extends AppCompatActivity {
         for(int i = 0; i < 3; i++)
             net.add(getIntent().getFloatExtra("amount" + i, 0.0f));
 
-        int row;
+        int row, counter = 0;
         row = getIntent().getIntExtra("size", 0);
 
         for(int i = 0; i < row; i++){
@@ -60,8 +60,14 @@ public class displayTransactionHistory extends AppCompatActivity {
             for(int j = 0; j < column; j++){
                 name.add(getIntent().getStringExtra("compiled" + i + j));
             }
-            compiled.add(i, name);
+            String[] prevMonth = String.valueOf(name.get(column-1)).split("/");
+            if(Integer.valueOf(currentMonth) - Integer.valueOf(prevMonth[0]) < 1) {    //change prevMonth[0] to prevMonth[1]
+                Log.i("act2", currentMonth);
+                Log.i("act2", prevMonth[0]);
+                compiled.add(counter, name);
+            }
         }
+
         transSpinnerEvent();
     }
 
