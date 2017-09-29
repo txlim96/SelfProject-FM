@@ -18,7 +18,9 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class displayTransactionHistory extends AppCompatActivity {
 
@@ -27,6 +29,7 @@ public class displayTransactionHistory extends AppCompatActivity {
     private ArrayList<ArrayList<String>> compiled = new ArrayList<>();
     private Spinner transSpinnerID;
     private TableLayout tableLayoutID;
+    private Calendar calendar = Calendar.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,12 +38,17 @@ public class displayTransactionHistory extends AppCompatActivity {
 
         SpinnerSettings();
 
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM");
+        String date = df.format(calendar.getTime());
+
+        String[] currentsplit = date.split("/");
+
         tableLayoutID = (TableLayout) findViewById(R.id.tableLayoutID);
         if(tableLayoutID != null)
             tableLayoutID.removeAllViews();
 
         net.clear();
-        for(int i = 0; i < 4; i++)
+        for(int i = 0; i < 3; i++)
             net.add(getIntent().getFloatExtra("amount" + i, 0.0f));
 
         int row;
@@ -206,25 +214,30 @@ public class displayTransactionHistory extends AppCompatActivity {
 
     protected void removeTransaction(TableRow tableRow){
         tableRow.removeAllViews();
-        compiled.remove(tableRow.getId());
-        float[] temp = new float[4];
-        for(int i = 0; i < 4; i++)
+
+        int amountLocation = 2;
+        int tempLocation = Integer.valueOf(compiled.get(tableRow.getId()).get(0));
+        float[] temp = new float[3];
+        for(int i = 0; i < 3; i++)
             temp[i] = 0;
-        if(compiled.size() > 0){
-            for(int i = 0; i < compiled.size(); i++){
-                int sign = 1;
-                String loc = compiled.get(i).get(0);
-                if(Integer.valueOf(loc) == 3){
-                    loc = compiled.get(i).get(1);
-                    sign = -1;
-                }
-                temp[Integer.valueOf(loc)] += Float.valueOf(compiled.get(i).get(compiled.get(i).size()-2)) * sign;
-            }
+
+        if(tempLocation == 3){
+            amountLocation += 1;
+            tempLocation = Integer.valueOf(compiled.get(tableRow.getId()).get(1));
+            if(tempLocation != 0 && tempLocation != 1)
+                tempLocation = 2;
         }
+        temp[tempLocation] = Float.valueOf(compiled.get(tableRow.getId()).get(amountLocation));
+        temp[2] = temp[tempLocation];
+
+        for(int i = 0; i < 3; i++){
+            temp[i] = net.get(i) - temp[i];
+        }
+
         net.clear();
-        for(int i = 0; i < 2; i++)
+        for(int i = 0; i < 3; i++)
             net.add(temp[i]);
-        net.add(temp[0] - temp[1] + temp[2] - temp[3]);
+        compiled.remove(tableRow.getId());
 
         getNames();
         saveTransactions();
