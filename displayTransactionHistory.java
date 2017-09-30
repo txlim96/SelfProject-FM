@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -180,7 +181,25 @@ public class displayTransactionHistory extends AppCompatActivity {
             tableRow.setId(position);
 
             tableLayoutID.addView(tableRow);
-            
+
+            tableRow.setOnTouchListener(
+                    new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            switch(event.getAction()){
+                                case MotionEvent.ACTION_DOWN:
+                                    tableRow.setBackgroundColor(getResources().getColor(R.color.tableOnClickColor));
+                                    break;
+
+                                case MotionEvent.ACTION_UP:
+                                    tableRow.setBackgroundColor(getResources().getColor(R.color.windowBackground));
+                                    break;
+                            }
+                            return false;
+                        }
+                    }
+            );
+
             tableRow.setOnLongClickListener(
                     new View.OnLongClickListener() {
                         @Override
