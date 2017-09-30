@@ -3,91 +3,116 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:gravity="top"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:textAlignment="center"
     tools:context="com.example.nelsonlim.financialmanagement.displayTransactionHistory">
 
     <GridLayout
+        android:id="@+id/gridLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/gridLayout"
-        android:paddingBottom="20dp">
+        android:layout_alignParentTop="true"
+        android:clipToPadding="true"
+        android:paddingBottom="20dp"
+        tools:targetApi="ice_cream_sandwich">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/transButton_res"
-            android:layout_row="0"
             android:layout_column="0"
-            android:paddingBottom="10dp" />
+            android:layout_gravity="center"
+            android:layout_row="0"
+            android:gravity="center"
+            android:paddingBottom="20dp"
+            android:paddingTop="10dp"
+            android:text="@string/transButton_res"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold|italic" />
 
         <Spinner
+            android:id="@+id/transSpinnerID"
             android:layout_width="203dp"
             android:layout_height="wrap_content"
-            android:id="@+id/transSpinnerID"
-            android:layout_row="1"
             android:layout_column="0"
-            android:spinnerMode="dropdown"
-            android:layout_gravity="left" />
+            android:layout_gravity="center"
+            android:layout_row="1"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:theme="@style/SpinnerTheme" />
 
     </GridLayout>
 
     <GridLayout
+        android:id="@+id/gridID"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/gridLayout"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/gridID">
+        android:layout_below="@+id/gridLayout"
+        tools:targetApi="ice_cream_sandwich">
 
         <TextView
+            android:id="@+id/textView2"
             android:layout_width="75dp"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/displayhist0_res"
-            android:id="@+id/textView2"
-            android:layout_row="0"
             android:layout_column="0"
-            android:textSize="16dp" />
+            android:layout_row="0"
+            android:gravity="left"
+            android:text="@string/displayhist0_res"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/white"
+            android:textSize="16dp"
+            tools:targetApi="ice_cream_sandwich" />
 
         <TextView
+            android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/displayhist1_res"
-            android:id="@+id/textView3"
-            android:layout_row="0"
             android:layout_column="1"
+            android:layout_row="0"
+            android:maxWidth="150dp"
+            android:text="@string/displayhist1_res"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/white"
             android:textSize="16dp"
-            android:maxWidth="150dp" />
+            tools:targetApi="ice_cream_sandwich" />
 
         <TextView
+            android:id="@+id/textView6"
             android:layout_width="96dp"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/details1_res"
-            android:id="@+id/textView6"
-            android:layout_row="0"
             android:layout_column="2"
-            android:textSize="16dp"
             android:layout_gravity="right"
-            android:maxWidth="85dp" />
+            android:layout_row="0"
+            android:maxWidth="85dp"
+            android:text="@string/details1_res"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/white"
+            android:textSize="16dp"
+            tools:targetApi="ice_cream_sandwich" />
 
     </GridLayout>
 
     <TableLayout
+        android:id="@+id/tableLayoutID"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/gridID"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/tableLayoutID">
+        android:layout_below="@+id/gridID"
+        android:textColor="@android:color/white">
 
     </TableLayout>
 
