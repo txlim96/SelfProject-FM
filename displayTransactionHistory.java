@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -38,10 +39,8 @@ public class displayTransactionHistory extends AppCompatActivity {
 
         SpinnerSettings();
 
-        SimpleDateFormat df = new SimpleDateFormat("dd/MM");
-        String date = df.format(calendar.getTime());
-
-        String[] currentsplit = date.split("/");
+        SimpleDateFormat df = new SimpleDateFormat("MM");
+        String currentMonth = df.format(calendar.getTime());
 
         tableLayoutID = (TableLayout) findViewById(R.id.tableLayoutID);
         if(tableLayoutID != null)
@@ -51,7 +50,7 @@ public class displayTransactionHistory extends AppCompatActivity {
         for(int i = 0; i < 3; i++)
             net.add(getIntent().getFloatExtra("amount" + i, 0.0f));
 
-        int row;
+        int row, counter = 0;
         row = getIntent().getIntExtra("size", 0);
 
         for(int i = 0; i < row; i++){
@@ -60,8 +59,15 @@ public class displayTransactionHistory extends AppCompatActivity {
             for(int j = 0; j < column; j++){
                 name.add(getIntent().getStringExtra("compiled" + i + j));
             }
-            compiled.add(i, name);
+
+            String[] prevMonth = String.valueOf(name.get(column-1)).split("/");
+            if(Integer.valueOf(currentMonth) - Integer.valueOf(prevMonth[1]) < 3) {
+                Log.i("act2", currentMonth);
+                Log.i("act2", prevMonth[1]);
+                compiled.add(counter, name);
+            }
         }
+
         transSpinnerEvent();
     }
 
@@ -158,13 +164,14 @@ public class displayTransactionHistory extends AppCompatActivity {
             date.setGravity(Gravity.LEFT);
             date.setTextColor(Color.WHITE);
 
-            description.setMinWidth(480);
-            description.setMaxWidth(480);
-            description.setPadding(0, 5, 0, 5);
+            description.setMinWidth(400);
+            description.setMaxWidth(400);
+            description.setPadding(70, 5, 0, 5);
             description.setTextSize(15);
             description.setTextColor(Color.WHITE);
 
             amount.setTextSize(18);
+            amount.setPadding(50, 5, 0, 5);
             amount.setGravity(Gravity.RIGHT);
             amount.setTextColor(Color.WHITE);
 
@@ -174,6 +181,24 @@ public class displayTransactionHistory extends AppCompatActivity {
             tableRow.setId(position);
 
             tableLayoutID.addView(tableRow);
+
+            tableRow.setOnTouchListener(
+                    new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            switch(event.getAction()){
+                                case MotionEvent.ACTION_DOWN:
+                                    tableRow.setBackgroundColor(getResources().getColor(R.color.tableOnClickColor));
+                                    break;
+
+                                case MotionEvent.ACTION_UP:
+                                    tableRow.setBackgroundColor(getResources().getColor(R.color.windowBackground));
+                                    break;
+                            }
+                            return false;
+                        }
+                    }
+            );
 
             tableRow.setOnLongClickListener(
                     new View.OnLongClickListener() {

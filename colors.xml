@@ -4,4 +4,5 @@
     <color name="windowBackground">#303030</color>
     <color name="colorAccent">#FF4081</color>
     <color name="spinnerText">#FFFFFF</color>
+    <color name="tableOnClickColor">#606060</color>
 </resources>
