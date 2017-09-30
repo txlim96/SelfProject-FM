@@ -38,9 +38,7 @@ public class displayTransactionHistory extends AppCompatActivity {
 
         SpinnerSettings();
 
-        ///////change "dd" to "MM"/////////////
-        SimpleDateFormat df = new SimpleDateFormat("dd");
-        ///////////////////////////////////////
+        SimpleDateFormat df = new SimpleDateFormat("MM");
         String currentMonth = df.format(calendar.getTime());
 
         tableLayoutID = (TableLayout) findViewById(R.id.tableLayoutID);
@@ -60,10 +58,11 @@ public class displayTransactionHistory extends AppCompatActivity {
             for(int j = 0; j < column; j++){
                 name.add(getIntent().getStringExtra("compiled" + i + j));
             }
+
             String[] prevMonth = String.valueOf(name.get(column-1)).split("/");
-            if(Integer.valueOf(currentMonth) - Integer.valueOf(prevMonth[0]) < 1) {    //change prevMonth[0] to prevMonth[1]
+            if(Integer.valueOf(currentMonth) - Integer.valueOf(prevMonth[1]) < 3) {
                 Log.i("act2", currentMonth);
-                Log.i("act2", prevMonth[0]);
+                Log.i("act2", prevMonth[1]);
                 compiled.add(counter, name);
             }
         }
@@ -164,13 +163,14 @@ public class displayTransactionHistory extends AppCompatActivity {
             date.setGravity(Gravity.LEFT);
             date.setTextColor(Color.WHITE);
 
-            description.setMinWidth(480);
-            description.setMaxWidth(480);
-            description.setPadding(0, 5, 0, 5);
+            description.setMinWidth(400);
+            description.setMaxWidth(400);
+            description.setPadding(70, 5, 0, 5);
             description.setTextSize(15);
             description.setTextColor(Color.WHITE);
 
             amount.setTextSize(18);
+            amount.setPadding(50, 5, 0, 5);
             amount.setGravity(Gravity.RIGHT);
             amount.setTextColor(Color.WHITE);
 
@@ -180,7 +180,7 @@ public class displayTransactionHistory extends AppCompatActivity {
             tableRow.setId(position);
 
             tableLayoutID.addView(tableRow);
-
+            
             tableRow.setOnLongClickListener(
                     new View.OnLongClickListener() {
                         @Override
